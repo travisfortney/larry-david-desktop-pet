@@ -70,8 +70,8 @@ def read_png_size(path):
 def main():
     manifest = json.loads(PET_JSON.read_text())
     required = {
-        "id": "larry-david-v2",
-        "displayName": "Larry David v2",
+        "id": "larry-david-v3",
+        "displayName": "Larry David v3",
         "spritesheetPath": "spritesheet.webp",
     }
     for key, value in required.items():

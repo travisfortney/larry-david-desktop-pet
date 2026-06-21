@@ -2,11 +2,11 @@
 
 A small desktop pet package built around my very unimpressed silver tabby.
 
-Larry is based on my cat: a skeptical silver-gray tabby kitten with huge thoughtful eyes, crossed paws, and smoother animation. This repo keeps the finished pet files, preview images, and a simple validation check in one place.
+Larry is based on my cat: a skeptical silver-gray tabby kitten with huge thoughtful eyes, crossed paws, and polished animation states. This repo keeps the finished pet files, preview images, and a simple validation check in one place.
 
 ## Preview
 
-![Larry David v2 contact sheet](qa/contact-sheet.png)
+![Larry David v3 contact sheet](qa/contact-sheet.png)
 
 Individual state previews:
 
@@ -37,7 +37,7 @@ That copies the pet into the target pet folder.
 To make Larry active, set:
 
 ```toml
-selected-avatar-id = "custom:larry-david-v2"
+selected-avatar-id = "custom:larry-david-v3"
 ```
 
 in your local app config, then wake or restart the app if needed.
