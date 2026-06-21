@@ -1,6 +1,6 @@
 # Package Notes
 
-Larry David v2 is packaged as a compact 8x9 desktop pet spritesheet with a matching manifest and preview images.
+Larry David v3 is packaged as a compact 8x9 desktop pet spritesheet with a matching manifest and preview images.
 
 ## Source Files
 
