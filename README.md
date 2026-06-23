@@ -6,6 +6,8 @@ Larry is based on my cat: a skeptical silver-gray tabby kitten with huge thought
 
 ~~Not _that_ Larry David.~~ The real Larry David here is the cat in my GitHub profile photo, and he is the ~~model~~ reference for this design.
 
+<img src="docs/images/real-larry-david.jpg" alt="The real Larry David, the cat this desktop pet is based on" width="180">
+
 ## Preview
 
 ![Larry David v3 contact sheet](qa/contact-sheet.png)
