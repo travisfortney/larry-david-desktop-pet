@@ -4,6 +4,8 @@ A small desktop pet package built around my very unimpressed silver tabby.
 
 Larry is based on my cat: a skeptical silver-gray tabby kitten with huge thoughtful eyes, crossed paws, and polished animation states. This repo keeps the finished pet files, preview images, and a simple validation check in one place.
 
+~~Not _that_ Larry David.~~ The real Larry David here is the cat in my GitHub profile photo, and he is the ~~model~~ reference for this design.
+
 ## Preview
 
 ![Larry David v3 contact sheet](qa/contact-sheet.png)
