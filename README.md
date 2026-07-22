@@ -10,7 +10,7 @@ This repo contains the finished spritesheet, animation previews, contact sheet, 
 
 ## Preview
 
-![Larry David v3 contact sheet](qa/contact-sheet.png)
+![Larry David contact sheet](qa/contact-sheet.png)
 
 Individual state previews:
 
@@ -41,7 +41,7 @@ That copies the pet into the target pet folder.
 To make Larry active, set:
 
 ```toml
-selected-avatar-id = "custom:larry-david-v3"
+selected-avatar-id = "custom:larry-david"
 ```
 
 in your local app config, then wake or restart the app if needed.

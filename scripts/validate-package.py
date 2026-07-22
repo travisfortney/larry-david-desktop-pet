@@ -4,6 +4,8 @@ import pathlib
 import struct
 import sys
 
+from PIL import Image
+
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 PET_JSON = ROOT / "pet" / "pet.json"
 SPRITESHEET = ROOT / "pet" / "spritesheet.webp"
@@ -21,6 +23,20 @@ EXPECTED_PREVIEWS = {
     "running.gif",
     "review.gif",
 }
+
+STATE_ROWS = (
+    "idle",
+    "running-right",
+    "running-left",
+    "waving",
+    "jumping",
+    "failed",
+    "waiting",
+    "running",
+    "review",
+)
+CELL_HEIGHT = 208
+FRINGE_PIXEL_LIMIT = 250
 
 
 def fail(message):
@@ -67,11 +83,33 @@ def read_png_size(path):
     return struct.unpack(">II", data[16:24])
 
 
+def validate_colored_fringe(path):
+    with Image.open(path) as image:
+        rgba = image.convert("RGBA")
+
+    for row, state in enumerate(STATE_ROWS):
+        strip = rgba.crop((0, row * CELL_HEIGHT, rgba.width, (row + 1) * CELL_HEIGHT))
+        magenta_pixels = 0
+        green_pixels = 0
+        for red, green, blue, alpha in strip.get_flattened_data():
+            if alpha < 16:
+                continue
+            if red >= 180 and blue >= 160 and green <= 130:
+                magenta_pixels += 1
+            if green >= 150 and green >= red * 1.5 and green >= blue * 1.5:
+                green_pixels += 1
+
+        if magenta_pixels > FRINGE_PIXEL_LIMIT:
+            fail(f"{state} has {magenta_pixels} magenta fringe pixels")
+        if green_pixels > FRINGE_PIXEL_LIMIT:
+            fail(f"{state} has {green_pixels} green fringe pixels")
+
+
 def main():
     manifest = json.loads(PET_JSON.read_text())
     required = {
-        "id": "larry-david-v3",
-        "displayName": "Larry David v3",
+        "id": "larry-david",
+        "displayName": "Larry David",
         "spritesheetPath": "spritesheet.webp",
     }
     for key, value in required.items():
@@ -80,6 +118,8 @@ def main():
 
     if read_webp_size(SPRITESHEET) != (1536, 1872):
         fail("spritesheet.webp should be 1536x1872")
+
+    validate_colored_fringe(SPRITESHEET)
 
     if read_png_size(CONTACT_SHEET) != (768, 1134):
         fail("contact-sheet.png should be 768x1134")
