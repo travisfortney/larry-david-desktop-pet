@@ -10,6 +10,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 PET_JSON = ROOT / "pet" / "pet.json"
 SPRITESHEET = ROOT / "pet" / "spritesheet.webp"
 CONTACT_SHEET = ROOT / "qa" / "contact-sheet.png"
+DIRECTION_SHEET = ROOT / "qa" / "look-directions.png"
 PREVIEW_DIR = ROOT / "qa" / "previews"
 
 EXPECTED_PREVIEWS = {
@@ -34,6 +35,8 @@ STATE_ROWS = (
     "waiting",
     "running",
     "review",
+    "look-000-to-157.5",
+    "look-180-to-337.5",
 )
 CELL_HEIGHT = 208
 FRINGE_PIXEL_LIMIT = 250
@@ -110,19 +113,23 @@ def main():
     required = {
         "id": "larry-david",
         "displayName": "Larry David",
+        "spriteVersionNumber": 2,
         "spritesheetPath": "spritesheet.webp",
     }
     for key, value in required.items():
         if manifest.get(key) != value:
             fail(f"pet.json has unexpected {key!r}: {manifest.get(key)!r}")
 
-    if read_webp_size(SPRITESHEET) != (1536, 1872):
-        fail("spritesheet.webp should be 1536x1872")
+    if read_webp_size(SPRITESHEET) != (1536, 2288):
+        fail("spritesheet.webp should be 1536x2288")
 
     validate_colored_fringe(SPRITESHEET)
 
-    if read_png_size(CONTACT_SHEET) != (768, 1134):
-        fail("contact-sheet.png should be 768x1134")
+    if read_png_size(CONTACT_SHEET) != (768, 1386):
+        fail("contact-sheet.png should be 768x1386")
+
+    if read_png_size(DIRECTION_SHEET) != (1536, 1170):
+        fail("look-directions.png should be 1536x1170")
 
     previews = {path.name for path in PREVIEW_DIR.glob("*.gif")}
     if previews != EXPECTED_PREVIEWS:

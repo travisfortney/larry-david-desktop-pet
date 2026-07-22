@@ -2,7 +2,7 @@
 
 A tiny animated desktop pet package based on Larry David, my deeply unimpressed silver tabby.
 
-This repo contains the finished spritesheet, animation previews, contact sheet, and a small validation script for installing Larry into a local desktop pet app.
+This repo contains the finished spritesheet, animation previews, contact sheets, and a small validation script for installing Larry into a local desktop pet app. Larry also tracks the pointer through 16 looking directions.
 
 ~~Not _that_ Larry David.~~ The real Larry David here is the cat in my GitHub profile photo, and he is the ~~model~~ reference for this design.
 
@@ -11,6 +11,10 @@ This repo contains the finished spritesheet, animation previews, contact sheet, 
 ## Preview
 
 ![Larry David contact sheet](qa/contact-sheet.png)
+
+Directional looks:
+
+<img src="qa/look-directions.png" alt="Larry David looking in 16 directions" width="768">
 
 Individual state previews:
 
@@ -21,8 +25,9 @@ Individual state previews:
 ## Contents
 
 - `pet/pet.json` - local pet manifest
-- `pet/spritesheet.webp` - final 8x9 spritesheet
+- `pet/spritesheet.webp` - final 8x11 spritesheet
 - `qa/contact-sheet.png` - contact sheet for all animation states
+- `qa/look-directions.png` - neutral pose and all 16 looking directions
 - `qa/previews/*.gif` - per-state animation previews
 - `scripts/install-local.sh` - local installer
 - `scripts/validate-package.py` - package sanity check
