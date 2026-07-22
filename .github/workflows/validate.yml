@@ -11,5 +11,8 @@ jobs:
       - name: Check out repo
         uses: actions/checkout@v4
 
+      - name: Install validation dependencies
+        run: python3 -m pip install -r requirements-dev.txt
+
       - name: Validate package
         run: make test
