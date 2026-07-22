@@ -1,23 +1,26 @@
 # Package Notes
 
-Larry David is packaged as a compact 8x9 desktop pet spritesheet with a matching manifest and preview images.
+Larry David is packaged as a compact 8x11 desktop pet spritesheet with a matching manifest, animation previews, and 16 pointer-tracking directions.
 
 ## Source Files
 
 - Pet manifest: `pet/pet.json`
 - Spritesheet: `pet/spritesheet.webp`
 - Contact sheet: `qa/contact-sheet.png`
+- Direction sheet: `qa/look-directions.png`
 - State previews: `qa/previews/*.gif`
 
 ## Validation Summary
 
-- Final spritesheet: `1536x1872`
+- Final spritesheet: `1536x2288`
 - Cell size: `192x208`
-- Rows: `9`
-- Used frames: `57`
+- Rows: `11`
+- Used frames: `73`
+- Sprite format: `2`
 - Transparent RGB residue: `0`
 - Deterministic validation: passed
 - Frame inspection: passed
+- Cardinal direction review: passed
 
 ## Included States
 
@@ -30,6 +33,8 @@ Larry David is packaged as a compact 8x9 desktop pet spritesheet with a matching
 - `waiting`
 - `running`
 - `review`
+- `look-000-to-157.5`
+- `look-180-to-337.5`
 
 ## Repo Scope
 
