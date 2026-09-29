@@ -39,6 +39,8 @@ STATE_ROWS = (
     "look-180-to-337.5",
 )
 CELL_HEIGHT = 208
+CELL_WIDTH = 192
+FRAME_COUNTS = (6, 8, 8, 4, 5, 8, 6, 6, 6, 8, 8)
 FRINGE_PIXEL_LIMIT = 250
 
 
@@ -108,6 +110,20 @@ def validate_colored_fringe(path):
             fail(f"{state} has {green_pixels} green fringe pixels")
 
 
+def validate_cells(path):
+    with Image.open(path) as image:
+        alpha = image.convert("RGBA").getchannel("A")
+    for row, count in enumerate(FRAME_COUNTS):
+        for column in range(8):
+            cell = alpha.crop((column * CELL_WIDTH, row * CELL_HEIGHT,
+                               (column + 1) * CELL_WIDTH, (row + 1) * CELL_HEIGHT))
+            populated = cell.getbbox() is not None
+            if column < count and not populated:
+                fail(f"{STATE_ROWS[row]} frame {column} is empty")
+            if column >= count and populated:
+                fail(f"{STATE_ROWS[row]} unused column {column} is not transparent")
+
+
 def main():
     manifest = json.loads(PET_JSON.read_text())
     required = {
@@ -123,6 +139,7 @@ def main():
     if read_webp_size(SPRITESHEET) != (1536, 2288):
         fail("spritesheet.webp should be 1536x2288")
 
+    validate_cells(SPRITESHEET)
     validate_colored_fringe(SPRITESHEET)
 
     if read_png_size(CONTACT_SHEET) != (768, 1386):

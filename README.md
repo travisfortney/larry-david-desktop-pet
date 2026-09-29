@@ -16,6 +16,14 @@ Directional looks:
 
 <img src="qa/look-directions.png" alt="Larry David looking in 16 directions" width="768">
 
+Larry's clockwise look-around sweep keeps his paws planted while his head and eyes follow the pointer:
+
+![Look-around animation](qa/motion/look-around.gif)
+
+The hop includes a crouch, visible lift, and a return to his resting baseline:
+
+![Idle to jump to idle](qa/motion/idle-jump-idle.gif)
+
 Individual state previews:
 
 | Idle | Running | Waiting | Review |
@@ -29,6 +37,9 @@ Individual state previews:
 - `qa/contact-sheet.png` - contact sheet for all animation states
 - `qa/look-directions.png` - neutral pose and all 16 looking directions
 - `qa/previews/*.gif` - per-state animation previews
+- `qa/motion/` - look-around comparison, jump sequence, and all-state GIF/MP4
+- `qa/sources/` - approved artwork strips and refinement briefs
+- `qa/validation.json` - structural and visual check results
 - `scripts/install-local.sh` - local installer
 - `scripts/validate-package.py` - package sanity check
 
@@ -53,4 +64,4 @@ in your local app config, then wake or restart the app if needed.
 
 ## Notes
 
-This is just a tiny polished package for a local desktop companion. The repo intentionally includes only the finished pet package and preview artifacts.
+This is just a tiny polished package for a local desktop companion. The repo includes the finished pet package, preview artifacts, and the source strips for the latest motion refinements.

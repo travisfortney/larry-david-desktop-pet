@@ -1,0 +1,98 @@
+{
+  "sha256": "988e207fc1275adf11c89a8bfa51d8efc846521bdbdbfd4b573de4e16287d700",
+  "sprite_version": 2,
+  "dimensions": [
+    1536,
+    2288
+  ],
+  "frames_per_row": [
+    6,
+    8,
+    8,
+    4,
+    5,
+    8,
+    6,
+    6,
+    6,
+    8,
+    8
+  ],
+  "structural_validation": "pass",
+  "upload_validation": "pass",
+  "standard_frame_inspection": "pass",
+  "blind_direction_review": {
+    "reviewers": 3,
+    "pairs": 14,
+    "result": "pass",
+    "errors": [],
+    "warnings": []
+  },
+  "final_visual_review": "pass",
+  "jump": {
+    "idle_baseline": 203,
+    "jump_baselines": [
+      202,
+      185,
+      167,
+      184,
+      202
+    ],
+    "airborne_lift_pixels": 35,
+    "landing_delta_pixels": 1
+  },
+  "look_registration": {
+    "neutral_center_x": 96.0,
+    "look_centers_x": [
+      95.5,
+      97.5,
+      96.0,
+      97.5,
+      97.0,
+      96.0,
+      98.5,
+      94.5,
+      95.0,
+      93.0,
+      92.0,
+      91.5,
+      91.0,
+      91.0,
+      95.0,
+      94.5
+    ],
+    "look_widths": [
+      113,
+      117,
+      114,
+      117,
+      114,
+      112,
+      115,
+      107,
+      110,
+      106,
+      104,
+      103,
+      104,
+      106,
+      112,
+      109
+    ],
+    "maximum_center_drift_pixels": 5.0,
+    "maximum_width_ratio": 1.1359223300970873
+  },
+  "continuity_review": "Ear gaps account for alpha-hole warnings. Two image-difference outliers were reviewed across the complete ordered loop; neither showed a wrong direction, broken silhouette, or conspicuous registration jump.",
+  "preserved_states": [
+    "idle (six used frames)",
+    "running-right",
+    "running-left",
+    "waving",
+    "failed",
+    "waiting",
+    "running",
+    "review"
+  ],
+  "preview_note": "Frame-derived previews. Idle/jump/idle uses the desktop renderer timing and three jump repetitions. Look-around uses a synthetic pointer sweep at 180 ms per direction.",
+  "desktop_playback": "Not directly observed."
+}
