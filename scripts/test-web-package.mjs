@@ -20,7 +20,14 @@ test('the web tarball contains only the module, styles, five images and usage fi
   const packed = execFileSync('tar', ['-tzf', archive], { encoding: 'utf8' })
     .trim().split('\n').map(path => path.replace(/^package\//, '')).sort();
   assert.deepEqual(packed, files);
-  assert.equal(manifest.private, true);
+  assert.equal(manifest.private, false);
+  assert.equal(manifest.publishConfig.registry, 'https://npm.pkg.github.com');
+  assert.equal(manifest.publishConfig.access, 'restricted');
+  assert.deepEqual(manifest.repository, {
+    type: 'git',
+    url: 'https://github.com/travisfortney/larry-david-desktop-pet.git',
+    directory: 'web',
+  });
   assert.equal(manifest.dependencies, undefined);
   assert.equal(manifest.scripts, undefined);
   assert.ok(statSync(archive).size < 500_000, 'Keep the browser package under 500 kB.');

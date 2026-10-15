@@ -1,7 +1,7 @@
 {
   "name": "@travisfortney/larry",
-  "version": "0.3.1",
-  "private": true,
+  "version": "0.3.2",
+  "private": false,
   "description": "Larry for websites.",
   "type": "module",
   "license": "UNLICENSED",
@@ -18,5 +18,14 @@
   ],
   "sideEffects": [
     "./larry.css"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/travisfortney/larry-david-desktop-pet.git",
+    "directory": "web"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com",
+    "access": "restricted"
+  }
 }

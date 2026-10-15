@@ -1,0 +1,63 @@
+name: Publish web package
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: larry-package-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          registry-url: https://npm.pkg.github.com
+          scope: '@travisfortney'
+
+      - name: Verify package and offline installation
+        run: make test-web
+
+      - name: Publish tested archive
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          archive="$(node -p "const p = require('./web/package.json'); 'dist/' + p.name.replace('@', '').replace('/', '-') + '-' + p.version + '.tgz'")"
+          npm publish "$archive" --ignore-scripts --registry=https://npm.pkg.github.com
+
+      - name: Verify registry installation
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          package_spec="$(node -p "const p = require('./web/package.json'); p.name + '@' + p.version")"
+          export LARRY_SOURCE="$GITHUB_WORKSPACE/web"
+          consumer="$(mktemp -d "$RUNNER_TEMP/larry-consumer.XXXXXX")"
+          cd "$consumer"
+          node -e "require('node:fs').writeFileSync('package.json', JSON.stringify({private: true, type: 'module'}))"
+          npm install "$package_spec" --ignore-scripts --no-audit --no-fund --cache "$consumer/.npm-cache"
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import { readFileSync, readdirSync } from 'node:fs';
+          import { join } from 'node:path';
+          import { mountLarry } from '@travisfortney/larry';
+          assert.equal(typeof mountLarry, 'function');
+          const source = process.env.LARRY_SOURCE;
+          const installed = 'node_modules/@travisfortney/larry';
+          const files = ['package.json', 'README.md', 'larry.js', 'larry.css',
+            ...readdirSync(join(source, 'assets')).map(file => 'assets/' + file)];
+          for (const file of files) {
+            assert.deepEqual(readFileSync(join(installed, file)), readFileSync(join(source, file)), file);
+          }
+          console.log('Published package matches the tested source.');
+          NODE

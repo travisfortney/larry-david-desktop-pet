@@ -2,7 +2,7 @@
 
 Larry's existing Fortn.ee artwork and interactions, packaged for reuse. No runtime
 dependencies, build step, account or service is needed. Nothing is persisted.
-The package is local-only and publication is disabled.
+Packages are distributed through GitHub Packages; local tarballs also work.
 
 ## Plain HTML
 
@@ -21,10 +21,29 @@ Page links and controls keep their normal actions. Larry and his captions are
 decorative and excluded from the accessibility tree. Reduced motion keeps him
 still and makes Companion travel immediate.
 
+## GitHub Packages
+
+Add this scope mapping to your site's `.npmrc`:
+
+```ini
+@travisfortney:registry=https://npm.pkg.github.com
+```
+
+Authenticate with a GitHub personal access token (classic) with `read:packages`,
+then install the pinned version:
+
+```sh
+npm install @travisfortney/larry@0.3.2
+```
+
+Keep tokens in your user configuration or CI secrets. For GitHub Actions, grant
+the consuming repository package access and use its `GITHUB_TOKEN` with
+`packages: read`. The initial package visibility is private.
+
 ## Local npm package
 
 With Node.js 20 or later, run `make pack-web` from the repository root. Install
-`dist/travisfortney-larry-0.3.1.tgz` into your app with `npm install /path/to/the.tgz`.
+`dist/travisfortney-larry-0.3.2.tgz` into your app with `npm install /path/to/the.tgz`.
 
 ```js
 import { mountLarry } from '@travisfortney/larry';
@@ -138,3 +157,12 @@ can point to an installation outside the usual Node module search path. Optional
 temporary local server and close their own browser. Engine checks cover desktop
 and narrow touch layouts; physical devices and older browser versions need
 their own testing.
+
+## Publishing
+
+Run the repository's **Publish web package** workflow manually from `main`.
+It checks the archive, the 500 kB limit and an offline consumer installation,
+then publishes the tested tarball to GitHub Packages and verifies a fresh registry
+installation. It uses the workflow token; no stored publishing secret is needed.
+Increment `web/package.json` before each release. Published versions cannot be
+replaced. Desktop pet files and artwork sources are outside the npm archive.
