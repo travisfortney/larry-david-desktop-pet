@@ -33,7 +33,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          archive="$(node -p "const p = require('./web/package.json'); 'dist/' + p.name.replace('@', '').replace('/', '-') + '-' + p.version + '.tgz'")"
+          archive="$(node -p "const p = require('./web/package.json'); './dist/' + p.name.replace('@', '').replace('/', '-') + '-' + p.version + '.tgz'")"
           npm publish "$archive" --ignore-scripts --registry=https://npm.pkg.github.com
 
       - name: Verify registry installation
