@@ -1,0 +1,17 @@
+#pet-layer[hidden], #pet-layer [hidden], .larry-inspection[hidden], .larry-inspection [hidden] { display: none !important; }
+#pet-layer { position: fixed; inset: 0; pointer-events: none; z-index: 15; overflow: hidden; }
+#larry { position: absolute; left: 0; top: 0; width: 108px; height: 117px; margin: 0; box-sizing: border-box; padding: 0; border: 0; background: transparent; pointer-events: none; user-select: none; filter: drop-shadow(0 8px 5px #00000020); }
+#larry img, #larry canvas { display: block; width: 100%; height: 100%; pointer-events: none; }
+/* Align the separate waving artwork with the seated atlas poses. */
+#larry img, #larry canvas[data-artwork="wave"] {
+  filter: brightness(.88) sepia(.15) saturate(1.3) hue-rotate(-20deg);
+  transform: translateY(1px) scale(.92, .96);
+  transform-origin: bottom center;
+}
+#pet-bubble { box-sizing: border-box; position: absolute; padding: 7px 10px; background: var(--larry-paper, var(--paper, #f7faf9)); color: var(--larry-ink, var(--ink, #273b45)); border: 1px solid var(--larry-rule, var(--rule, #273b4526)); border-radius: 8px; font: 11px/1.4 var(--larry-font, var(--mono, monospace)); width: max-content; max-width: min(260px, calc(100vw - 16px)); white-space: normal; }
+#pet-layer .treat { position: absolute; width: 22px; height: 22px; border: 0; background: #b5773d; border-radius: 6px; box-shadow: inset 0 0 0 3px #d7a56f, 0 2px 4px #00000025; transform: rotate(25deg); pointer-events: none; }
+#pet-layer .treat::after { content: ''; position: absolute; width: 3px; height: 3px; border-radius: 50%; background: #81542d; left: 7px; top: 7px; box-shadow: 6px 5px #81542d; }
+@media (max-width: 600px) { #larry { width: 64px; height: 69px; } }
+.larry-inspection { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 8px 20px 20px; }
+.larry-inspection #larry { position: relative; left: 0 !important; top: 0 !important; transform: none !important; flex: none; }
+.larry-inspection #pet-bubble { position: static; max-width: 100%; white-space: normal; text-align: center; }

@@ -62,6 +62,13 @@ selected-avatar-id = "custom:larry-david"
 
 in your local app config, then wake or restart the app if needed.
 
+## On websites
+
+[The web package](web/README.md) brings Larry's Fortn.ee interactions to other
+sites. It includes the existing browser artwork and captions, with no runtime
+dependencies. Run `make test-web` to verify the local package or `make pack-web`
+to create its tarball. The desktop package and installer stay separate.
+
 ## Notes
 
 This is just a tiny polished package for a local desktop companion. The repo includes the finished pet package, preview artifacts, and the source strips for the latest motion refinements.

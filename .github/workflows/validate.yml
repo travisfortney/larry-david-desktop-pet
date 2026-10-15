@@ -16,3 +16,6 @@ jobs:
 
       - name: Validate package
         run: make test
+
+      - name: Validate web package
+        run: make test-web

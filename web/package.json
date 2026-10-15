@@ -1,0 +1,22 @@
+{
+  "name": "@travisfortney/larry",
+  "version": "0.3.0",
+  "private": true,
+  "description": "Larry for websites.",
+  "type": "module",
+  "license": "UNLICENSED",
+  "exports": {
+    ".": "./larry.js",
+    "./larry.css": "./larry.css",
+    "./assets/*": "./assets/*"
+  },
+  "files": [
+    "larry.js",
+    "larry.css",
+    "assets/*.webp",
+    "assets/*.png"
+  ],
+  "sideEffects": [
+    "./larry.css"
+  ]
+}
