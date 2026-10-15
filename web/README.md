@@ -24,7 +24,7 @@ still and makes Companion travel immediate.
 ## Local npm package
 
 With Node.js 20 or later, run `make pack-web` from the repository root. Install
-`dist/travisfortney-larry-0.3.0.tgz` into your app with `npm install /path/to/the.tgz`.
+`dist/travisfortney-larry-0.3.1.tgz` into your app with `npm install /path/to/the.tgz`.
 
 ```js
 import { mountLarry } from '@travisfortney/larry';
@@ -116,6 +116,11 @@ back to that still, and missing optional strips leave basic feeding usable.
 
 Travel uses elapsed time and CSS transforms. Walking artwork changes at most
 20 times per second, without interpolation or generated intermediate poses.
+Blinks and hops repaint only when their pose changes; hop movement still follows
+each display frame. Companion has no continuous JavaScript animation loop while
+idle and suspends its idle timer when the page is hidden. For occasional
+appearances on another site, use Cameo or Reactions; Lookout uses only the still
+image. These modes have no idle interval.
 The tarball stays under 500 kB, including all images, module, styles and usage.
 
 ## Checks

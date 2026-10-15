@@ -408,6 +408,64 @@ test('Travel speed is stable at 60 and 120 Hz with at most twenty sprite paints 
 });
 
 
+test('Hops and blinks paint only changed poses at 60 and 120 Hz', async t => {
+  const page = await pageFor(t);
+  const samples = [];
+  for (const hz of [60, 120]) {
+    await mount(page);
+    await page.waitForFunction(() => ['walkReady', 'lookReady', 'extraReady'].every(key => document.querySelector('#larry').dataset[key] === 'true'));
+    samples.push(await page.evaluate(hz => {
+      let next = 0, time = 1000, poses = [], hops = [];
+      const frames = new Map(), request = window.requestAnimationFrame, cancel = window.cancelAnimationFrame, random = Math.random;
+      window.requestAnimationFrame = callback => { frames.set(++next, callback); return next; };
+      window.cancelAnimationFrame = id => frames.delete(id);
+      Math.random = () => 0;
+      const pet = document.querySelector('#larry'), painter = pet.querySelector('canvas').getContext('2d');
+      const draw = painter.drawImage;
+      painter.drawImage = function (...args) {
+        if (args[0].src.endsWith('/larry-extra-strip.webp')) poses.push(`${args[2] / 117}:${args[1] / 108}`);
+        return draw.apply(this, args);
+      };
+      function step() {
+        time += 1000 / hz;
+        const callbacks = [...frames.values()]; frames.clear();
+        for (const callback of callbacks) callback(time);
+        if (pet.dataset.state === 'hopping') hops.push(parseFloat(pet.style.getPropertyValue('--larry-hop')));
+      }
+      function feed() {
+        const box = pet.getBoundingClientRect();
+        document.body.dispatchEvent(new MouseEvent('click', { bubbles: true, clientX: box.x + box.width / 2, clientY: box.y + box.height - 11 }));
+        step();
+      }
+      const transitions = values => values.filter((value, i) => !i || value !== values[i - 1]);
+      feed(); feed();
+      for (let tick = 0; tick < hz; tick++) step();
+      const blink = { paints: poses.length, poses: transitions(poses), pending: frames.size };
+      poses = [];
+      feed();
+      for (let tick = 0; tick < hz; tick++) step();
+      const hop = { paints: poses.length, poses: transitions(poses), offsets: hops, pending: frames.size };
+      const eaten = pet.dataset.eaten, state = pet.dataset.state;
+      window.larry.destroy();
+      window.requestAnimationFrame = request; window.cancelAnimationFrame = cancel;
+      painter.drawImage = draw; Math.random = random;
+      return { hz, blink, hop, eaten, state, afterDestroy: frames.size };
+    }, hz));
+  }
+  t.diagnostic(JSON.stringify({ browser: browserName, gestures: samples.map(({ hz, blink, hop }) => ({ hz, blink: { paints: blink.paints, poses: blink.poses }, hop: { paints: hop.paints, poses: hop.poses } })) }));
+  for (const sample of samples) {
+    assert.deepEqual(sample.blink.poses, ['1:0', '1:3', '1:0']);
+    assert.deepEqual(sample.hop.poses, ['0:0', '0:1', '0:2', '0:3', '0:4']);
+    assert.equal(sample.blink.paints, 3);
+    assert.equal(sample.hop.paints, 5);
+    assert.ok(sample.hop.offsets.length > sample.hop.paints, 'Keep the hop transform smooth between sprite poses.');
+    assert.ok(Math.min(...sample.hop.offsets) < -7.9);
+    assert.equal(sample.blink.pending, 0); assert.equal(sample.hop.pending, 0);
+    assert.equal(sample.eaten, '3'); assert.equal(sample.state, 'idle'); assert.equal(sample.afterDestroy, 0);
+  }
+});
+
+
 test('Companion renders walking and gaze cleanly, reaches a treat and fits after resize', async t => {
   for (const mobile of [false, true]) {
     const page = await pageFor(t, mobile ? { viewport: { width: 320, height: 740 }, hasTouch: true, isMobile: true, deviceScaleFactor: 2 } : {});

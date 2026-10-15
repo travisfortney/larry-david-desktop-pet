@@ -224,8 +224,12 @@ export function mountLarry({
     lastSpeech = Date.now(); lastCaption = chosen;
     say(chosen); return true;
   }
+  let extraPose = null;
   function paintExtra(row, column, state) {
     if (!extraReady || !painter) return false;
+    const pose = row * 8 + column;
+    if (extraPose === pose && !canvas.hidden && pet.dataset.state === state) return true;
+    extraPose = pose;
     delete canvas.dataset.artwork;
     painter.clearRect(0, 0, 108, 117);
     painter.drawImage(extras, column * 108, row * 117, 108, 117, 0, 0, 108, 117);
