@@ -1,6 +1,6 @@
 {
   "name": "@travisfortney/larry",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "private": false,
   "description": "Larry for websites.",
   "type": "module",

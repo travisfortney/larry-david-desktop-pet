@@ -1,13 +1,15 @@
 /**
  * Mount one decorative Larry per page. Load larry.css alongside this module.
  * @param {{ mode?: 'companion' | 'cameo' | 'greeter' | 'inspector' | 'reactions' | 'task-buddy' | 'lookout' | 'easter-egg', duration?: number,
- *   assetBase?: string | URL, anchor?: Element | null,
+ *   assetBase?: string | URL, assetUrls?: Record<string, string>, preloadArtwork?: boolean, anchor?: Element | null,
  *   dialog?: HTMLDialogElement | null, hoverTargets?: string | null, trigger?: Element | null }} options
  */
 export function mountLarry({
   mode = 'companion',
   duration = 6000,
   assetBase = new URL('./assets/', import.meta.url),
+  assetUrls = {},
+  preloadArtwork = false,
   anchor = null,
   dialog: readme = null,
   hoverTargets = null,
@@ -19,7 +21,7 @@ export function mountLarry({
   if (mode === 'inspector' && (!readme || readme.tagName !== 'DIALOG')) throw new TypeError('Inspector needs a dialog element.');
   if (document.querySelector('#pet-layer')) throw new Error('Larry is already mounted.');
   const assets = new URL(assetBase, document.baseURI);
-  const asset = name => new URL(name, assets).href;
+  const asset = name => new URL(assetUrls[name] || name, assets).href;
   const events = new AbortController();
   const on = (element, type, listener, options = {}) =>
     element.addEventListener(type, listener, { ...options, signal: events.signal });
@@ -343,13 +345,16 @@ export function mountLarry({
   }
   on(runs, 'load', () => { ready = true; pet.dataset.walkReady = 'true'; });
   on(runs, 'error', () => { pet.dataset.walkReady = 'failed'; });
-  runs.src = asset('larry-run-strip.webp');
+
   on(looks, 'load', () => { lookReady = true; pet.dataset.lookReady = 'true'; if (!target) rest(); });
   on(looks, 'error', () => { pet.dataset.lookReady = 'failed'; });
-  looks.src = asset('larry-look-strip.webp');
+
   on(extras, 'load', () => { extraReady = true; pet.dataset.extraReady = 'true'; });
   on(extras, 'error', () => { pet.dataset.extraReady = 'failed'; });
-  extras.src = asset('larry-extra-strip.webp');
+  const loadRuns = () => { if (!runs.hasAttribute('src') && !reduced.matches) runs.src = asset('larry-run-strip.webp'); };
+  const loadLooks = () => { if (!looks.hasAttribute('src')) looks.src = asset('larry-look-strip.webp'); };
+  const loadExtras = () => { if (!extras.hasAttribute('src')) extras.src = asset('larry-extra-strip.webp'); };
+  if (preloadArtwork) { loadRuns(); loadLooks(); loadExtras(); }
   on(image, 'load', () => { if (!target) rest(); });
   on(image, 'error', fallback);
   setWave();
@@ -358,6 +363,7 @@ export function mountLarry({
   let eaten = 0, bubbleTimer, rerouteTimer, perched = true;
   on(document, 'pointermove', event => {
     if (event.pointerType !== 'mouse') return;
+    if (!reduced.matches) loadLooks();
     activity(); pointer = { x: event.clientX, y: event.clientY }; watchFolder(event.target);
     if (target || reduced.matches || hopFrame || blinkFrame || inspecting) return;
     const distance = Math.hypot(pointer.x - x - petWidth / 2, pointer.y - y - petHeight * .28);
@@ -422,6 +428,7 @@ export function mountLarry({
   }
   function snack(px, py) {
     const redirected = !!target;
+    loadRuns(); loadExtras();
     activity(); cancelHop(); cancelBlink();
     if (redirected) reroutes.push(Date.now());
     reroutes = reroutes.filter(time => Date.now() - time < 6000);
@@ -475,6 +482,7 @@ export function mountLarry({
   on(window, 'resize', () => { petWidth = pet.offsetWidth; petHeight = pet.offsetHeight; if (!bubble.hidden) bubbleSize = bubble.getBoundingClientRect(); cancelHop(); cancelBlink(); stopSnack(); if (perched) perchAtHero(); else { move(x, y); rest(); } });
   function inspectReadme() {
     if (!readme?.open || inspecting) return;
+    loadLooks();
     activity(); cancelHop(); cancelBlink(); stopSnack(); inspecting = true;
     clearTimeout(bubbleTimer); bubble.hidden = true;
     pet.disabled = true;
@@ -495,7 +503,12 @@ export function mountLarry({
     on(readme, 'close', finishInspection);
   }
   on(document, 'keydown', activity);
-  on(document, 'pointerdown', activity, { passive: true });
+  on(document, 'pointerdown', event => {
+    activity();
+    if (event.pointerType !== 'mouse' || !(event.target instanceof Element) ||
+        event.target.closest('a, button, input, textarea, select, summary, [contenteditable="true"]')) return;
+    loadRuns(); loadExtras();
+  }, { passive: true });
   on(window, 'scroll', activity, { passive: true });
   on(document, 'visibilitychange', () => {
     if (!document.hidden) { activity(); nextAside = Date.now() + asideDelay(); setWave(); startIdle(); }
@@ -503,6 +516,7 @@ export function mountLarry({
   });
   let idleTimer;
   function idleTick() {
+    if (!document.hidden && Date.now() - lastActivity >= 29000) loadExtras();
     if (!document.hidden && !target && !hopFrame && !blinkFrame && !inspecting && !sleepy && extraReady && Date.now() - lastActivity >= 30000) {
       sleepy = true; rest(); speak('sleepy', false);
     }

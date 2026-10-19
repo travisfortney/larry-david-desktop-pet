@@ -97,7 +97,7 @@ async function motion(page, preference) {
 }
 
 async function mount(page, options = {}) {
-  await page.evaluate(options => window.larry = window.mountLarry(options), options);
+  await page.evaluate(options => window.larry = window.mountLarry({ preloadArtwork: true, ...options }), options);
   await page.waitForFunction(() => {
     const image = document.querySelector('#larry img');
     return image?.complete && image.naturalWidth > 0;
@@ -116,18 +116,39 @@ const hidden = page => page.locator('#pet-layer').evaluate(node => node.hidden);
 test('Companion remains the default and still feeds, tracks and cleans up', async t => {
   const page = await pageFor(t, { reducedMotion: 'reduce' });
   await mount(page);
-  await page.waitForFunction(() => document.querySelector('#larry').dataset.lookReady === 'true');
   assert.equal(await page.locator('#larry').getAttribute('data-mode'), 'companion');
   await capture(page, 'companion-still');
   await page.mouse.click(250, 400); await page.clock.runFor(32);
   assert.equal(await page.locator('#larry').getAttribute('data-eaten'), '1');
   assert.equal(await page.locator('#pet-bubble').isVisible(), true);
   await motion(page, 'no-preference');
-  await page.mouse.move(30, 200); await page.clock.runFor(32);
+  await page.mouse.move(30, 200);
+  await page.waitForFunction(() => document.querySelector('#larry').dataset.lookReady === 'true');
+  await page.clock.runFor(32);
   assert.notEqual(await page.locator('#larry').getAttribute('data-look-direction'), null);
   await page.getByRole('button', { name: 'Page control' }).click();
   assert.equal(await page.getByRole('button', { name: 'Clicked' }).count(), 1);
   await page.evaluate(() => window.larry.destroy());
+  assert.equal(await page.evaluate(() => window.intervals.size), 0);
+});
+
+test('Companion loads only the still image for reduced-motion startup and loads poses on demand', async t => {
+  const page = await pageFor(t, { reducedMotion: 'reduce' });
+  const artwork = [];
+  page.on('request', request => { if (/\.(webp|png)$/.test(request.url())) artwork.push(new URL(request.url()).pathname); });
+  await mount(page, { preloadArtwork: false });
+  assert.deepEqual(artwork, ['/larry/assets/larry-still.png']);
+  await page.mouse.click(250, 400); await page.clock.runFor(32);
+  assert.equal(await page.locator('#larry').getAttribute('data-eaten'), '1');
+  assert.equal(artwork.includes('/larry/assets/larry-run-strip.webp'), false);
+  assert.equal(artwork.includes('/larry/assets/larry-look-strip.webp'), false);
+  await motion(page, 'no-preference');
+  await page.mouse.move(30, 200);
+  await page.waitForFunction(() => document.querySelector('#larry').dataset.lookReady === 'true');
+  await page.mouse.click(100, 400);
+  await page.waitForFunction(() => document.querySelector('#larry').dataset.walkReady === 'true');
+  await page.evaluate(() => window.larry.destroy());
+  await page.clock.runFor(60000);
   assert.equal(await page.evaluate(() => window.intervals.size), 0);
 });
 

@@ -43,7 +43,7 @@ the consuming repository package access and use its `GITHUB_TOKEN` with
 ## Local npm package
 
 With Node.js 20 or later, run `make pack-web` from the repository root. Install
-`dist/travisfortney-larry-0.3.2.tgz` into your app with `npm install /path/to/the.tgz`.
+`dist/travisfortney-larry-<version>.tgz` into your app with `npm install /path/to/the.tgz`.
 
 ```js
 import { mountLarry } from '@travisfortney/larry';
@@ -132,6 +132,8 @@ are about 54, 80 and 92 kB; their original sources remain in `qa/sources/web/`.
 The still PNG is a lossless copy of the first wave frame, about 50 kB. Static
 presets use it alone; wave and task poses load when needed. Failed waves fall
 back to that still, and missing optional strips leave basic feeding usable.
+
+Companion loads walking artwork on a mouse press in ordinary page space or actual travel, gaze on mouse movement or readme inspection, and extra poses on that mouse press, a consumed tap, or an impending nap. Reduced motion skips walking and pointer-gaze downloads. Set `preloadArtwork: true` to opt into advance loading; `assetUrls` can map image filenames to versioned public URLs. Preference changes retain usable fallbacks.
 
 Travel uses elapsed time and CSS transforms. Walking artwork changes at most
 20 times per second, without interpolation or generated intermediate poses.
