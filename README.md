@@ -2,13 +2,18 @@
 
 A tiny animated desktop pet package based on Larry David, my deeply unimpressed silver tabby.
 
-This repo contains the finished spritesheet, animation previews, contact sheets, and a small validation script for installing Larry into a local desktop pet app. Larry also tracks the pointer through 16 looking directions.
+![Larry's animation preview](qa/motion/all-states.gif)
+
+This repo contains the finished spritesheet, animation previews, contact sheets, and a local installer. Larry also tracks the pointer through 16 looking directions.
 
 ~~Not _that_ Larry David.~~ The real Larry David here is the cat in my GitHub profile photo, and he is the ~~model~~ reference for this design.
 
 <img src="docs/images/real-larry-david.jpg" alt="The real Larry David, the cat this desktop pet is based on" width="180">
 
 ## Preview
+
+<details>
+<summary>Animation details and sprite sheets</summary>
 
 ![Larry David contact sheet](qa/contact-sheet.png)
 
@@ -30,6 +35,8 @@ Individual state previews:
 | --- | --- | --- | --- |
 | ![Idle animation](qa/previews/idle.gif) | ![Running animation](qa/previews/running.gif) | ![Waiting animation](qa/previews/waiting.gif) | ![Review animation](qa/previews/review.gif) |
 
+</details>
+
 ## Contents
 
 - `pet/pet.json` - local pet manifest
@@ -45,22 +52,24 @@ Individual state previews:
 
 ## Install Locally
 
-Run:
+Requires an existing desktop pet host that supports version 2 `pet.json` manifests and the `selected-avatar-id` setting.
+
+From the repository root, point `LOCAL_PET_APP_HOME` at the host's data folder (the parent of `pets/`):
 
 ```bash
-export LOCAL_PET_APP_HOME="/path/to/your/local/pet/app"
+export LOCAL_PET_APP_HOME="/absolute/path/to/pet-host-data"
 ./scripts/install-local.sh
 ```
 
-That copies the pet into the target pet folder.
+This copies `pet.json` and `spritesheet.webp` into `$LOCAL_PET_APP_HOME/pets/larry-david/`, replacing those two files on reinstall. The host's configuration and other pets are left alone.
 
-To make Larry active, set:
+Select Larry in the host's TOML configuration:
 
 ```toml
 selected-avatar-id = "custom:larry-david"
 ```
 
-in your local app config, then wake or restart the app if needed.
+Wake or restart the host if needed.
 
 ## On websites
 
